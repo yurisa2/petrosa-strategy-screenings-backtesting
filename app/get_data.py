@@ -5,16 +5,7 @@ import newrelic.agent
 
 
 @newrelic.agent.background_task()
-def get_data(ticker, period, limit=999999999):
-
-    if(period == '5m'):
-        suffix = 'm5'
-    if(period == '15m'):
-        suffix = 'm15'
-    if(period == '30m'):
-        suffix = 'm30'
-    if(period == '1h'):
-        suffix = 'h1'
+def get_data(ticker, suffix, limit=999999999):
 
     client = pymongo.MongoClient(
                 os.getenv(
