@@ -1,0 +1,1 @@
+screenings = ['inside_bar_buy']

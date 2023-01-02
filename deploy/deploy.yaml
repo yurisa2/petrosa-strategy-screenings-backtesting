@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petrosa-strategy-screenings-backtesting-deploy
+  namespace: petrosa-apps
+  labels:
+    app: petrosa-strategy-screenings-backtesting-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: petrosa-strategy-screenings-backtesting
+  template:
+    metadata:
+      labels:
+        app: petrosa-strategy-screenings-backtesting
+    spec:
+      nodeName: k3os-18256
+      containers:
+      - name: petrosa-strategy-screenings-backtesting
+        image: yurisa2/petrosa-strategy-screenings-backtesting:latest
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: 10G
+            cpu: 2
+          requests:
+            cpu: 200m
+            memory: 200m                            
+        env:
+          - name: VERSION
+            value: "0.0.20"
+          - name: MONGO_URI
+            valueFrom:
+              secretKeyRef:
+                name: petrosa-apps-secret
+                key: MONGO_URI
+                optional: false
+          - name: NEW_RELIC_LICENSE_KEY
+            valueFrom:
+              secretKeyRef:
+                name: petrosa-apps-secret
+                key: NEW_RELIC_LICENSE_KEY
+                optional: false
