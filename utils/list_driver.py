@@ -1,6 +1,6 @@
-import pymongo
 import os
 
+import pymongo
 
 client = pymongo.MongoClient(
             os.getenv(
@@ -18,7 +18,7 @@ col_symbols = client.petrosa_crypto['candles_h1'].aggregate(
      ])
 
 
-periods = ['5m', '15m', '30m', '1h']
+periods = ['m15', 'm30', 'h1']
 
 
 full_bt_list = []
@@ -28,9 +28,9 @@ for symbol in col_symbols:
         row = {}
         row['symbol'] = symbol['_id']
         row['period'] = period
-        row['strategy'] = 'simple_gap_finder'
+        row['strategy'] = 'inside_bar_buy'
         row['status'] = 0
         full_bt_list.append(row)
         print(row)
 
-# client.petrosa_crypto['backtest_controller'].insert_many(full_bt_list)
+client.petrosa_crypto['backtest_controller'].insert_many(full_bt_list)

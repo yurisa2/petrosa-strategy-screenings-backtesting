@@ -6,6 +6,7 @@ import random
 import logging
 
 
+
 logging.warning('starting petrosa-strategy-screenings-backtesting | ver.: ' + 
                 os.environ.get('VERSION', '0.0.0'))
 
