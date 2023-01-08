@@ -36,11 +36,13 @@ class bb_backtest(Strategy):
                 print(e)
 
 
-            if result != {}:                
-                self.buy(sl=result['stop_loss'], 
-                        tp=result['take_profit'], 
-                        limit=result['entry_value'])
-                        
+            if result != {}:
+                try:
+                    self.buy(sl=result['stop_loss'], 
+                            tp=result['take_profit'], 
+                            limit=result['entry_value'])
+                except Exception as e:
+                    print(e)            
         else:
             return True
 
