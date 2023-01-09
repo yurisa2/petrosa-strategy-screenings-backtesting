@@ -32,9 +32,11 @@ class bb_backtest(Strategy):
 
             try:
                 result = screenings.inside_bar_buy(work_data, self.tf_timeframe)
+            except UserWarning as usr_e:
+                logging.info(usr_e)
             except Exception as e:
-                print(e)
-
+                logging.error(e)
+                return False
 
             if result != {}:
                 try:
@@ -42,7 +44,7 @@ class bb_backtest(Strategy):
                             tp=result['take_profit'], 
                             limit=result['entry_value'])
                 except Exception as e:
-                    print(e)            
+                    logging.error(e)            
         else:
             return True
 

@@ -1,3 +1,5 @@
+import logging
+
 from app import datacon
 
 
@@ -8,8 +10,8 @@ def inside_bar_buy(candles, timeframe, periods=126):
     dat = dat.sort_index(ascending=True)
 
     if len(dat) < periods:
-        print('Error: insufficient data')
-
+        logging.info('Error: insufficient data')
+        
 
     close = float(list(dat['Close'])[-1])
     low = float(list(dat['Low'])[-1])
