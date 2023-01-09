@@ -19,7 +19,7 @@ RUN pip install ddtrace
 
 ENV NEW_RELIC_APP_NAME=petrosa-strategy-screenings-backtesting
 ENV DD_SERVICE=petrosa-strategy-screenings-backtesting
-ENV DD_TRACE_AGENT_URL=http://datadog-agent-petrosa-cluster-agent.datadog.svc.cluster.local:5005
+ENV DD_TRACE_AGENT_URL=http://datadog-agent-petrosa-cluster-agent.datadog.svc.cluster.local:8126
 ENV NEW_RELIC_DISTRIBUTED_TRACING_ENABLED=true
 ENV NEW_RELIC_MONITOR_MODE=true
 # ENV NEW_RELIC_LOG_LEVEL=debug
