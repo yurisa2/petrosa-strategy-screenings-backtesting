@@ -42,3 +42,9 @@ spec:
                 name: petrosa-apps-secret
                 key: NEW_RELIC_LICENSE_KEY
                 optional: false
+          - name: DD_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: petrosa-apps-secret
+                key: DD_API_KEY
+                optional: false
