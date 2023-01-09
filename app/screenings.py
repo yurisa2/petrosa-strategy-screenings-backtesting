@@ -1,10 +1,8 @@
 import logging
 
-from ddtrace import tracer
 from app import datacon
 
 
-@tracer.wrap()
 def inside_bar_buy(candles, timeframe, periods=126):
 
     dat = candles
