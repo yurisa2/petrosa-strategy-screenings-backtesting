@@ -14,9 +14,11 @@ COPY . ./
 # Install production dependencies.
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install newrelic
+RUN pip install ddtrace
 
 
 ENV NEW_RELIC_APP_NAME=petrosa-strategy-screenings-backtesting
+ENV DD_SERVICE=petrosa-strategy-screenings-backtesting
 ENV NEW_RELIC_DISTRIBUTED_TRACING_ENABLED=true
 ENV NEW_RELIC_MONITOR_MODE=true
 # ENV NEW_RELIC_LOG_LEVEL=debug
@@ -29,5 +31,5 @@ ENV NEW_RELIC_LOG=/tmp/newrelic.log
 # Timeout is set to 0 to disable the timeouts of the workers to allow Cloud Run to handle instance scaling.
 # CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app
 
-CMD ["python", "main.py"]
+CMD ["ddtrace-run", "python", "main.py"]
 

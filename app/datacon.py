@@ -6,9 +6,10 @@ import random
 import newrelic.agent
 import pandas as pd
 import pymongo
+from ddtrace import tracer
 
 
-@newrelic.agent.background_task()
+@tracer.wrap()
 def get_client() -> pymongo.MongoClient:
     client = pymongo.MongoClient(
         os.getenv(
@@ -20,6 +21,7 @@ def get_client() -> pymongo.MongoClient:
     return client
 
 
+@tracer.wrap()
 def get_data(ticker, period, limit=999999999):
 
     suffix = period
@@ -50,7 +52,7 @@ def get_data(ticker, period, limit=999999999):
     return data_df
 
 
-@newrelic.agent.background_task()
+@tracer.wrap()
 def find_params():
     client = get_client()
     try:
@@ -84,7 +86,7 @@ def find_params():
     return params
 
 
-@newrelic.agent.background_task()
+@tracer.wrap()
 def update_status(params, status):
     client = get_client()
 
@@ -94,7 +96,7 @@ def update_status(params, status):
     return True
 
 
-@newrelic.agent.background_task()
+@tracer.wrap()
 def post_results(symbol, test_period, doc):
     client = get_client()
 
@@ -106,6 +108,7 @@ def post_results(symbol, test_period, doc):
     return True
 
 
+@tracer.wrap()
 def json_to_df(candles_list) -> pd.DataFrame:
 
     dat = pd.DataFrame(candles_list)
@@ -116,6 +119,7 @@ def json_to_df(candles_list) -> pd.DataFrame:
     return dat
 
 
+@tracer.wrap()
 def screening_output(
     ticker,
     timeframe,

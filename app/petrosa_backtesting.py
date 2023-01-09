@@ -3,14 +3,11 @@ import json
 import logging
 import time
 
-import newrelic.agent
 import numpy as np
 from backtesting import Backtest, Strategy
+from ddtrace import tracer
 
-from app import datacon
-from app import screenings
-
-import json
+from app import datacon, screenings
 
 
 class bb_backtest(Strategy):
@@ -18,6 +15,7 @@ class bb_backtest(Strategy):
     def init(self) -> None:
         pass
 
+    @tracer.wrap()
     def next(self):
         
         if (self.data.index[-1] in self.main_data.index):
@@ -48,7 +46,7 @@ class bb_backtest(Strategy):
             return True
 
 
-@newrelic.agent.background_task()
+@tracer.wrap()
 def run_backtest(symbol, test_period):
 
     data = datacon.get_data(symbol, 'm5')
@@ -84,7 +82,7 @@ def run_backtest(symbol, test_period):
     datacon.post_results(symbol, test_period, doc)
 
 
-@newrelic.agent.background_task()
+@tracer.wrap()
 def continuous_run():
     try:
         params = datacon.find_params()
