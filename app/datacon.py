@@ -20,7 +20,6 @@ def get_client() -> pymongo.MongoClient:
     return client
 
 
-@newrelic.agent.background_task()
 def get_data(ticker, period, limit=999999999):
 
     suffix = period
@@ -107,7 +106,6 @@ def post_results(symbol, test_period, doc):
     return True
 
 
-@newrelic.agent.background_task()
 def json_to_df(candles_list) -> pd.DataFrame:
 
     dat = pd.DataFrame(candles_list)
@@ -118,7 +116,6 @@ def json_to_df(candles_list) -> pd.DataFrame:
     return dat
 
 
-@newrelic.agent.background_task()
 def screening_output(
     ticker,
     timeframe,

@@ -18,7 +18,6 @@ class bb_backtest(Strategy):
     def init(self) -> None:
         pass
 
-    @newrelic.agent.background_task()
     def next(self):
         
         if (self.data.index[-1] in self.main_data.index):
