@@ -51,8 +51,8 @@ class bb_backtest(Strategy):
             if result != {}:
                 try:
                     
-                    sl = result['entry_value'] * ((self.buy_sl * 100) - 1) / 100
-                    tp = result['entry_value'] * ((self.buy_tp * 100) + 1) / 100
+                    sl = result['entry_value'] * ((100 - self.buy_sl) / 100)
+                    tp = result['entry_value'] * ((100 + self.buy_tp) / 100)
                     
                     self.buy(sl=sl, 
                             tp=tp, 
