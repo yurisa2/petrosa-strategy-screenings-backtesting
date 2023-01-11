@@ -14,22 +14,22 @@ import json
 
 
 class bb_backtest(Strategy):
-    buy_sl = None
-    buy_tp = None
+    # buy_sl = None
+    # buy_tp = None
     
     def init(self) -> None:
         pass
 
     def next(self):
         
-        if (
-            self.buy_sl is None
-            or self.buy_tp is None
-        ):
-            return True
+#         if (
+#             self.buy_sl is None
+#  # type: ignore            or self.buy_tp is None
+#         ):
+#             return True
 
-        if(self.buy_sl > self.buy_tp): # should be done via constraints
-            return True
+#         if(self.buy_sl > self.buy_tp): # should be done via constraints
+#             return True
         
         if (self.data.index[-1] in self.main_data.index):
             work_data = self.main_data.loc[self.main_data.index
@@ -51,15 +51,15 @@ class bb_backtest(Strategy):
             if result != {}:
                 try:
                     
-                    sl = result['entry_value'] * ((100 - self.buy_sl) / 100)
-                    tp = result['entry_value'] * ((100 + self.buy_tp) / 100)
+                    # sl = result['entry_value'] * ((100 - self.buy_sl) / 100)
+                    # tp = result['entry_value'] * ((100 + self.buy_tp) / 100)
                     
-                    self.buy(sl=sl, 
-                            tp=tp, 
-                            limit=result['entry_value'])
-                    # self.buy(sl=result['stop_loss'], 
-                    #         tp=result['take_profit'], 
+                    # self.buy(sl=sl, 
+                    #         tp=tp, 
                     #         limit=result['entry_value'])
+                    self.buy(sl=result['stop_loss'], 
+                            tp=result['take_profit'], 
+                            limit=result['entry_value'])
                 except Exception as e:
                     logging.error(e)            
         else:
@@ -87,14 +87,15 @@ def run_backtest(symbol, test_period):
         exclusive_orders=True,
         cash=100000)
 
-    stats = bt.optimize(
-        buy_sl=list(np.arange(1, 3, 0.5)),
-        buy_tp=list(np.arange(1, 4, 0.5)),
-        maximize='SQN',
-        # minimize='Max. Drawdown [%]',
-        max_tries=200,
-        random_state=0,
-        return_heatmap=False)
+    # stats = bt.optimize(
+    #     buy_sl=list(np.arange(1, 3, 0.5)),
+    #     buy_tp=list(np.arange(1, 4, 0.5)),
+    #     maximize='SQN',
+    #     # minimize='Max. Drawdown [%]',
+    #     max_tries=200,
+    #     random_state=0,
+    #     return_heatmap=False)
+    stats = bt.run()
 
     new_hm = {}
     new_hm['insert_timestamp'] = datetime.datetime.now()
@@ -103,6 +104,7 @@ def run_backtest(symbol, test_period):
     new_hm['symbol'] = symbol
     new_hm['trades_list'] = stats._trades.to_dict('records')
     new_hm['equity_curve'] = stats._equity_curve.to_dict('records')
+    new_hm['test_type'] = 'LASTBAR'
 
     doc = json.dumps({**stats._strategy._params,
                      **stats, **new_hm}, default=str)
