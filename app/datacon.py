@@ -55,17 +55,17 @@ def find_params():
     client = get_client()
     try:
         params = client.petrosa_crypto['backtest_controller'].find(
-            {"status": 0, "strategy": "inside_bar_buy"})
+            {"status": 0, "str_class": "ta"})
         params = list(params)
 
         if len(params) == 0:
             params = client.petrosa_crypto['backtest_controller'].find(
-                {"status": 1, "strategy": "inside_bar_buy"})
+                {"status": 1, "str_class": "ta"})
             params = list(params)
 
         if len(params) == 0:
             params = client.petrosa_crypto['backtest_controller'].find(
-                {"strategy": "inside_bar_buy"})
+                {"str_class": "ta"})
             params = list(params)
 
         if len(params) == 1:
@@ -95,11 +95,11 @@ def update_status(params, status):
 
 
 @newrelic.agent.background_task()
-def post_results(symbol, test_period, doc):
+def post_results(symbol, test_period, doc, strategy):
     client = get_client()
 
     client.petrosa_crypto['backtest_results'].update_one(
-        {"strategy": "inside_bar_buy",
+        {"strategy": strategy,
          "symbol": symbol,
          "period": test_period
          }, {"$set": doc}, upsert=True)

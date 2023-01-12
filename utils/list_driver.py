@@ -28,8 +28,10 @@ for symbol in col_symbols:
         row = {}
         row['symbol'] = symbol['_id']
         row['period'] = period
-        row['strategy'] = 'inside_bar_buy'
+        row['strategy'] = 'inside_bar_sell'
         row['status'] = 0
+        row['str_class'] = 'ta'
+        row['type'] = 'SELL'
         full_bt_list.append(row)
         print(row)
 

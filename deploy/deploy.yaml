@@ -18,7 +18,7 @@ spec:
       nodeName: k3os-18256
       containers:
       - name: petrosa-strategy-screenings-backtesting
-        image: yurisa2/petrosa-strategy-screenings-backtesting:v0.0.8
+        image: yurisa2/petrosa-strategy-screenings-backtesting:v0.0.9
         imagePullPolicy: Always
         resources:
           limits:
@@ -29,7 +29,7 @@ spec:
             memory: 200m                            
         env:
           - name: VERSION
-            value: "0.0.8"
+            value: "0.0.9"
           - name: MONGO_URI
             valueFrom:
               secretKeyRef:

@@ -41,44 +41,45 @@ class bb_backtest(Strategy):
 
 
             try:
-                result = screenings.inside_bar_buy(work_data, self.tf_timeframe)
+                func = getattr(screenings, self.params['strategy'])
+                result = func(work_data, self.tf_timeframe)
+                if result != {}:
+
+                    if(self.params['type'] == "BUY"):
+                        self.buy(sl=result['stop_loss'],
+                                tp=result['take_profit'],
+                                limit=result['entry_value'])
+                    else:
+                        self.sell(sl=result['stop_loss'],
+                                 tp=result['take_profit'],
+                                 limit=result['entry_value'])
+
             except UserWarning as usr_e:
                 logging.info(usr_e)
             except Exception as e:
                 logging.error(e)
                 return False
 
-            if result != {}:
-                try:
-                    
-                    # sl = result['entry_value'] * ((100 - self.buy_sl) / 100)
-                    # tp = result['entry_value'] * ((100 + self.buy_tp) / 100)
-                    
-                    # self.buy(sl=sl, 
-                    #         tp=tp, 
-                    #         limit=result['entry_value'])
-                    self.buy(sl=result['stop_loss'], 
-                            tp=result['take_profit'], 
-                            limit=result['entry_value'])
-                except Exception as e:
-                    logging.error(e)            
+       
         else:
             return True
 
 
 @newrelic.agent.background_task()
-def run_backtest(symbol, test_period):
+def run_backtest(params):
 
-    data = datacon.get_data(symbol, 'm5')
-    main_data = datacon.get_data(symbol, test_period)
+    data = datacon.get_data(params['symbol'], 'm5')
+    main_data = datacon.get_data(params['symbol'], params['period'])
 
     if (len(data) == 0 or len(main_data) == 0):
         return False
 
     strat = bb_backtest
     strat.main_data = main_data
-
-    strat.tf_timeframe = test_period
+    strat.tf_timeframe = params['period']
+    
+    strat.params = params
+    
 
     bt = Backtest(
         data,
@@ -99,9 +100,9 @@ def run_backtest(symbol, test_period):
 
     new_hm = {}
     new_hm['insert_timestamp'] = datetime.datetime.now()
-    new_hm['strategy'] = 'inside_bar_buy'
-    new_hm['period'] = test_period
-    new_hm['symbol'] = symbol
+    new_hm['strategy'] = params['strategy']
+    new_hm['period'] = params['period']
+    new_hm['symbol'] = params['symbol']
     new_hm['trades_list'] = stats._trades.to_dict('records')
     new_hm['equity_curve'] = stats._equity_curve.to_dict('records')
     new_hm['test_type'] = 'LASTBAR'
@@ -110,7 +111,8 @@ def run_backtest(symbol, test_period):
                      **stats, **new_hm}, default=str)
     doc = json.loads(doc)
 
-    datacon.post_results(symbol, test_period, doc)
+    datacon.post_results(
+        params['symbol'], params['period'], doc, params['strategy'])
 
 
 @newrelic.agent.background_task()
@@ -120,7 +122,7 @@ def continuous_run():
 
         logging.warning('Running backtest for inside_bar_buy on: ' +
                         str(params))
-        bt_ret = run_backtest(params['symbol'], params['period'])
+        bt_ret = run_backtest(params)
 
         if bt_ret is False:
             datacon.update_status(params=params, status=-1)
