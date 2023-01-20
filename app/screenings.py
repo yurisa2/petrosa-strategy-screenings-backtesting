@@ -98,15 +98,15 @@ def continuous_stitch_buy(candles, timeframe, periods=126):
     if len(dat) < periods:
         logging.info('Error: insufficient data')
         
-    close = float(list(dat['close'])[-1])
-    last_close = float(list(dat['close'])[-2])
-    low = float(list(dat['low'])[-1])
-    high = float(list(dat['high'])[-1])
-    high2 = float(list(dat['high'])[-2])
-    high3 = float(list(dat['high'])[-3])
+    close = float(list(dat['Close'])[-1])
+    last_close = float(list(dat['Close'])[-2])
+    low = float(list(dat['Low'])[-1])
+    high = float(list(dat['High'])[-1])
+    high2 = float(list(dat['High'])[-2])
+    high3 = float(list(dat['High'])[-3])
 
-    ema20 = dat["close"].ewm(span=20, min_periods=19, adjust=True).mean()
-    ema30 = dat["close"].ewm(span=30, min_periods=29, adjust=True).mean()
+    ema20 = dat["Close"].ewm(span=20, min_periods=19, adjust=True).mean()
+    ema30 = dat["Close"].ewm(span=30, min_periods=29, adjust=True).mean()
     last_ema20 = ema20.iloc[-2]
     ema20_3 = ema20.iloc[-3]
 
@@ -143,16 +143,16 @@ def continuous_stitch_sell(candles, timeframe, periods=126):
     if len(dat) < periods:
         logging.info('Error: insufficient data')
         
-    low = float(list(dat['low'])[-1])
-    low2 = float(list(dat['low'])[-2])
-    low3 = float(list(dat['low'])[-3])
-    high = float(list(dat['high'])[-1])
-    high1 = float(list(dat['high'])[-2])
-    last_close = float(list(dat['close'])[-2])
+    low = float(list(dat['Low'])[-1])
+    low2 = float(list(dat['Low'])[-2])
+    low3 = float(list(dat['Low'])[-3])
+    high = float(list(dat['High'])[-1])
+    high1 = float(list(dat['High'])[-2])
+    last_close = float(list(dat['Close'])[-2])
 
-    ema9 = dat["close"].ewm(span=9, min_periods=8, adjust=True).mean()
-    ema20 = dat["close"].ewm(span=20, min_periods=19, adjust=True).mean()
-    ema30 = dat["close"].ewm(span=30, min_periods=29, adjust=True).mean()
+    ema9 = dat["Close"].ewm(span=9, min_periods=8, adjust=True).mean()
+    ema20 = dat["Close"].ewm(span=20, min_periods=19, adjust=True).mean()
+    ema30 = dat["Close"].ewm(span=30, min_periods=29, adjust=True).mean()
     last_ema20 = ema20.iloc[-2]
     ema20_3 = ema20.iloc[-3]
 
@@ -191,11 +191,11 @@ def setup_91_buy(candles, timeframe, periods=126):
     if len(dat) < periods:
         logging.info('Error: insufficient data')
 
-    close = float(dat['close'].iloc[-1])
-    low = float(dat['low'].iloc[-1])
-    high = float(dat['high'].iloc[-1])
+    close = float(dat['Close'].iloc[-1])
+    low = float(dat['Low'].iloc[-1])
+    high = float(dat['High'].iloc[-1])
 
-    ema9 = dat["close"].ewm(span=9, min_periods=8, adjust=True).mean()
+    ema9 = dat["Close"].ewm(span=9, min_periods=8, adjust=True).mean()
     ema9_last = ema9.iloc[-1]
     ema9_penultimate = ema9.iloc[-2]
     ema9_3 = ema9.iloc[-3]
@@ -230,11 +230,11 @@ def setup_91_sell(candles, timeframe, periods=126):
         logging.info('Error: insufficient data')
         
         
-    close = float(dat['close'].iloc[-1])
-    low = float(dat['low'].iloc[-1])
-    high = float(dat['high'].iloc[-1])
+    close = float(dat['Close'].iloc[-1])
+    low = float(dat['Low'].iloc[-1])
+    high = float(dat['High'].iloc[-1])
 
-    ema9 = dat["close"].ewm(span=9, min_periods=8, adjust=True).mean()
+    ema9 = dat["Close"].ewm(span=9, min_periods=8, adjust=True).mean()
     ema9_last = ema9.iloc[-1]
     ema9_penultimate = ema9.iloc[-2]
     ema9_3 = ema9.iloc[-3]
@@ -268,16 +268,16 @@ def setup_92_buy(candles, timeframe, periods=126):
     if len(dat) < periods:
         logging.info('Error: insufficient data')
 
-    low = float(dat['low'].iloc[-1])
-    high = float(dat['high'].iloc[-1])
+    low = float(dat['Low'].iloc[-1])
+    high = float(dat['High'].iloc[-1])
 
-    close = float(dat['close'].iloc[-1])
-    last_low = float(dat['low'].iloc[-2])
+    close = float(dat['Close'].iloc[-1])
+    last_low = float(dat['Low'].iloc[-2])
 
-    ema9 = dat["close"].ewm(span=9, min_periods=8, adjust=True).mean()
+    ema9 = dat["Close"].ewm(span=9, min_periods=8, adjust=True).mean()
     inclination = ema9.diff()
 
-    buy_cond_1 = False in list(dat['low'][-5:].astype(float) > ema9[-5:])
+    buy_cond_1 = False in list(dat['Low'][-5:].astype(float) > ema9[-5:])
     buy_cond_2 = False in list(inclination[-5:] > 0)
 
     if (not buy_cond_1 and not buy_cond_2
@@ -306,16 +306,16 @@ def setup_92_sell(candles, timeframe, periods=126):
     if len(dat) < periods:
         logging.info('Error: insufficient data')
 
-    low = float(dat['low'].iloc[-1])
-    high = float(dat['high'].iloc[-1])
+    low = float(dat['Low'].iloc[-1])
+    high = float(dat['High'].iloc[-1])
 
-    close = float(dat['close'].iloc[-1])
-    last_high = float(dat['high'].iloc[-2])
+    close = float(dat['Close'].iloc[-1])
+    last_high = float(dat['High'].iloc[-2])
 
-    ema9 = dat["close"].ewm(span=9, min_periods=8, adjust=True).mean()
+    ema9 = dat["Close"].ewm(span=9, min_periods=8, adjust=True).mean()
     inclination = ema9.diff()
 
-    sell_cond_1 = False in list(dat['high'][-5:].astype(float) < ema9[-5:])
+    sell_cond_1 = False in list(dat['High'][-5:].astype(float) < ema9[-5:])
     sell_cond_2 = False in list(inclination[-5:] < 0)
 
     if (not sell_cond_1 and not sell_cond_2
@@ -344,17 +344,17 @@ def setup_93_buy(candles, timeframe, periods=126):
     if len(dat) < periods:
         logging.info('Error: insufficient data')
 
-    ema9 = dat["close"].ewm(span=9, min_periods=8, adjust=True).mean()
+    ema9 = dat["Close"].ewm(span=9, min_periods=8, adjust=True).mean()
     inclination = ema9.diff()
 
-    buy_cond_1 = False in list(dat['low'][-3:].astype(float) > ema9[-3:])
+    buy_cond_1 = False in list(dat['Low'][-3:].astype(float) > ema9[-3:])
     buy_cond_2 = False in list(inclination[-5:] > 0)
 
-    close_3 = float(dat['close'].iloc[-3])
-    close_2 = float(dat['close'].iloc[-2])
-    close = float(dat['close'].iloc[-1])
-    low = float(dat['low'].iloc[-1])
-    high = float(dat['high'].iloc[-1])
+    close_3 = float(dat['Close'].iloc[-3])
+    close_2 = float(dat['Close'].iloc[-2])
+    close = float(dat['Close'].iloc[-1])
+    low = float(dat['Low'].iloc[-1])
+    high = float(dat['High'].iloc[-1])
 
     buy_cond_3 = close_2 < close_3 and close < close_3
 
@@ -383,17 +383,17 @@ def setup_93_sell(candles, timeframe, periods=126):
     if len(dat) < periods:
         logging.info('Error: insufficient data')
 
-    ema9 = dat["close"].ewm(span=9, min_periods=8, adjust=True).mean()
+    ema9 = dat["Close"].ewm(span=9, min_periods=8, adjust=True).mean()
     inclination = ema9.diff()
 
-    sell_cond_1 = False in list(dat['high'][-3:].astype(float) < ema9[-3:])
+    sell_cond_1 = False in list(dat['High'][-3:].astype(float) < ema9[-3:])
     sell_cond_2 = False in list(inclination[-5:] < 0)
 
-    close_3 = float(dat['close'].iloc[-3])
-    close_2 = float(dat['close'].iloc[-2])
-    close = float(dat['close'].iloc[-1])
-    low = float(dat['low'].iloc[-1])
-    high = float(dat['high'].iloc[-1])
+    close_3 = float(dat['Close'].iloc[-3])
+    close_2 = float(dat['Close'].iloc[-2])
+    close = float(dat['Close'].iloc[-1])
+    low = float(dat['Low'].iloc[-1])
+    high = float(dat['High'].iloc[-1])
 
     sell_cond_3 = close_2 > close_3 and close > close_3
 
@@ -422,16 +422,16 @@ def setup_94_buy(candles, timeframe, periods=126):
     if len(dat) < periods:
         logging.info('Error: insufficient data')
 
-    ema9 = dat["close"].ewm(span=9, min_periods=8, adjust=True).mean()
+    ema9 = dat["Close"].ewm(span=9, min_periods=8, adjust=True).mean()
     dat['ema'] = ema9
     inc_ema9 = ema9.diff()
 
-    buy_cond_1 = False in list(dat['low'][-7:-2].astype(float) > ema9[-7:-2])
+    buy_cond_1 = False in list(dat['Low'][-7:-2].astype(float) > ema9[-7:-2])
 
-    close_2 = float(dat['close'].iloc[-2])
-    low = float(dat['low'].iloc[-1])
-    low_2 = low = float(dat['low'].iloc[-2])
-    high = float(dat['high'].iloc[-1])
+    close_2 = float(dat['Close'].iloc[-2])
+    low = float(dat['Low'].iloc[-1])
+    low_2 = low = float(dat['Low'].iloc[-2])
+    high = float(dat['High'].iloc[-1])
     buy_cond_2 = (close_2 < ema9.iloc[-2]) and (low > low_2)
     buy_cond_3 = (inc_ema9.iloc[-2] < 0) and (inc_ema9.iloc[-1] > 0)
 
@@ -459,16 +459,16 @@ def setup_94_sell(candles, timeframe, periods=126):
     if len(dat) < periods:
         logging.info('Error: insufficient data')
 
-    ema9 = dat["close"].ewm(span=9, min_periods=8, adjust=True).mean()
+    ema9 = dat["Close"].ewm(span=9, min_periods=8, adjust=True).mean()
     dat['ema'] = ema9
     inc_ema9 = ema9.diff()
 
-    sell_cond_1 = False in list(dat['high'][-7:-2].astype(float) < ema9[-7:-2])
+    sell_cond_1 = False in list(dat['High'][-7:-2].astype(float) < ema9[-7:-2])
 
-    close_2 = float(dat['close'].iloc[-2])
-    low = float(dat['low'].iloc[-1])
-    high = float(dat['high'].iloc[-1])
-    high_2 = float(dat['high'].iloc[-2])
+    close_2 = float(dat['Close'].iloc[-2])
+    low = float(dat['Low'].iloc[-1])
+    high = float(dat['High'].iloc[-1])
+    high_2 = float(dat['High'].iloc[-2])
 
     # print(inc_ema9)
 
@@ -500,15 +500,15 @@ def fox_trap_buy(candles, timeframe, periods=126):
     if len(dat) < periods:
         logging.info('Error: insufficient data')
 
-    close = float(list(dat['close'])[-1])
-    low = float(list(dat['low'])[-1])
-    high = float(dat['high'].iloc[-1])
-    high2 = float(dat['high'].iloc[-2])
-    high3 = float(dat['high'].iloc[-3])
+    close = float(list(dat['Close'])[-1])
+    low = float(list(dat['Low'])[-1])
+    high = float(dat['High'].iloc[-1])
+    high2 = float(dat['High'].iloc[-2])
+    high3 = float(dat['High'].iloc[-3])
 
-    ema8 = dat["close"].ewm(span=8, min_periods=7, adjust=True).mean()
-    ema20 = dat["close"].ewm(span=20, min_periods=19, adjust=True).mean()
-    ema80 = dat["close"].ewm(span=80, min_periods=79, adjust=True).mean()
+    ema8 = dat["Close"].ewm(span=8, min_periods=7, adjust=True).mean()
+    ema20 = dat["Close"].ewm(span=20, min_periods=19, adjust=True).mean()
+    ema80 = dat["Close"].ewm(span=80, min_periods=79, adjust=True).mean()
     ema20_2 = ema20.iloc[-2]
     ema20_3 = ema20.iloc[-3]
 
@@ -546,14 +546,14 @@ def fox_trap_sell(candles, timeframe, periods=126):
     if len(dat) < periods:
         logging.info('Error: insufficient data')
 
-    close = float(list(dat['close'])[-1])
-    high = float(list(dat['high'])[-1])
-    low = float(list(dat['low'])[-1])
-    low2 = float(list(dat['low'])[-2])
-    low3 = float(list(dat['low'])[-3])
+    close = float(list(dat['Close'])[-1])
+    high = float(list(dat['High'])[-1])
+    low = float(list(dat['Low'])[-1])
+    low2 = float(list(dat['Low'])[-2])
+    low3 = float(list(dat['Low'])[-3])
 
-    ema8 = dat["close"].ewm(span=8, min_periods=7, adjust=True).mean()
-    ema80 = dat["close"].ewm(span=80, min_periods=79, adjust=True).mean()
+    ema8 = dat["Close"].ewm(span=8, min_periods=7, adjust=True).mean()
+    ema80 = dat["Close"].ewm(span=80, min_periods=79, adjust=True).mean()
     ema8_2 = ema8.iloc[-2]
     ema8_3 = ema8.iloc[-3]
 
@@ -590,15 +590,15 @@ def bear_trap_buy(candles, timeframe, periods=126):
     if len(dat) < periods:
         logging.info('Error: insufficient data')
 
-    close = float(list(dat['close'])[-1])
-    last_close = float(list(dat['close'])[-2])
-    low = float(list(dat['low'])[-1])
-    high = float(list(dat['high'])[-1])
-    high2 = float(list(dat['high'])[-2])
-    high3 = float(list(dat['high'])[-3])
+    close = float(list(dat['Close'])[-1])
+    last_close = float(list(dat['Close'])[-2])
+    low = float(list(dat['Low'])[-1])
+    high = float(list(dat['High'])[-1])
+    high2 = float(list(dat['High'])[-2])
+    high3 = float(list(dat['High'])[-3])
 
-    ema8 = dat["close"].ewm(span=8, min_periods=7, adjust=True).mean()
-    ema80 = dat["close"].ewm(span=80, min_periods=79, adjust=True).mean()
+    ema8 = dat["Close"].ewm(span=8, min_periods=7, adjust=True).mean()
+    ema80 = dat["Close"].ewm(span=80, min_periods=79, adjust=True).mean()
     last_ema80 = ema80.iloc[-2]
     ema8_2 = ema8.iloc[-2]
     ema8_3 = ema8.iloc[-3]
@@ -634,15 +634,15 @@ def bear_trap_sell(candles, timeframe, periods=126):
     if len(dat) < periods:
         logging.info('Error: insufficient data')
 
-    close = float(list(dat['close'])[-1])
-    last_close = float(list(dat['close'])[-2])
-    low = float(list(dat['low'])[-1])
-    low2 = float(list(dat['low'])[-2])
-    low3 = float(list(dat['low'])[-3])
-    high = float(list(dat['high'])[-1])
+    close = float(list(dat['Close'])[-1])
+    last_close = float(list(dat['Close'])[-2])
+    low = float(list(dat['Low'])[-1])
+    low2 = float(list(dat['Low'])[-2])
+    low3 = float(list(dat['Low'])[-3])
+    high = float(list(dat['High'])[-1])
 
-    ema8 = dat["close"].ewm(span=8, min_periods=7, adjust=True).mean()
-    ema80 = dat["close"].ewm(span=80, min_periods=79, adjust=True).mean()
+    ema8 = dat["Close"].ewm(span=8, min_periods=7, adjust=True).mean()
+    ema80 = dat["Close"].ewm(span=80, min_periods=79, adjust=True).mean()
     last_ema80 = ema80.iloc[-2]
     ema8_2 = ema8.iloc[-2]
     ema8_3 = ema8.iloc[-3]
