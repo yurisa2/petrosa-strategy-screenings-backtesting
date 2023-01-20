@@ -119,7 +119,7 @@ def run_backtest(params):
     list_doc['period'] = params['period']
     list_doc['symbol'] = params['symbol']
     list_doc['trades_list'] = stats._trades.to_dict('records')
-    list_doc['equity_curve'] = stats._equity_curve.to_dict('records')
+    # list_doc['equity_curve'] = stats._equity_curve.to_dict('records')
     
     list_doc = json.dumps(list_doc, default=str)
     list_doc = json.loads(list_doc)
