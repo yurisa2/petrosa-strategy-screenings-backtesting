@@ -97,8 +97,28 @@ def update_status(params, status):
 @newrelic.agent.background_task()
 def post_results(symbol, test_period, doc, strategy):
     client = get_client()
-
+    client.petrosa_crypto['backtest_results'].delete_one({"strategy": strategy,
+                                                          "symbol": symbol,
+                                                          "period": test_period
+                                                          })
     client.petrosa_crypto['backtest_results'].update_one(
+        {"strategy": strategy,
+         "symbol": symbol,
+         "period": test_period
+         }, {"$set": doc}, upsert=True)
+    return True
+
+
+@newrelic.agent.background_task()
+def post_list_results(symbol, test_period, doc, strategy):
+    client = get_client()
+
+    client.petrosa_crypto['backtest_results_lists'].delete_one({"strategy": strategy,
+                                                          "symbol": symbol,
+                                                          "period": test_period
+                                                          })
+
+    client.petrosa_crypto['backtest_results_lists'].update_one(
         {"strategy": strategy,
          "symbol": symbol,
          "period": test_period

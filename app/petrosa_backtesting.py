@@ -4,7 +4,6 @@ import logging
 import time
 
 import newrelic.agent
-import numpy as np
 from backtesting import Backtest, Strategy
 
 from app import datacon
@@ -103,9 +102,8 @@ def run_backtest(params):
     new_hm['strategy'] = params['strategy']
     new_hm['period'] = params['period']
     new_hm['symbol'] = params['symbol']
-    new_hm['trades_list'] = stats._trades.to_dict('records')
-    new_hm['equity_curve'] = stats._equity_curve.to_dict('records')
     new_hm['test_type'] = 'LASTBAR'
+    new_hm['n_trades'] = stats['# Trades']
 
     doc = json.dumps({**stats._strategy._params,
                      **stats, **new_hm}, default=str)
@@ -113,6 +111,21 @@ def run_backtest(params):
 
     datacon.post_results(
         params['symbol'], params['period'], doc, params['strategy'])
+
+    list_doc = {}
+    list_doc['insert_timestamp'] = datetime.datetime.now()
+    list_doc['n_trades'] = stats['# Trades']
+    list_doc['strategy'] = params['strategy']
+    list_doc['period'] = params['period']
+    list_doc['symbol'] = params['symbol']
+    list_doc['trades_list'] = stats._trades.to_dict('records')
+    list_doc['equity_curve'] = stats._equity_curve.to_dict('records')
+    
+    list_doc = json.dumps(list_doc, default=str)
+    list_doc = json.loads(list_doc)
+
+    datacon.post_list_results(
+        params['symbol'], params['period'], list_doc, params['strategy'])
 
 
 @newrelic.agent.background_task()
