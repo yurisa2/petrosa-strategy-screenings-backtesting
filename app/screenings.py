@@ -430,7 +430,7 @@ def setup_94_buy(candles, timeframe, periods=126):
 
     close_2 = float(dat['Close'].iloc[-2])
     low = float(dat['Low'].iloc[-1])
-    low_2 = low = float(dat['Low'].iloc[-2])
+    low_2 = float(dat['Low'].iloc[-2])
     high = float(dat['High'].iloc[-1])
     buy_cond_2 = (close_2 < ema9.iloc[-2]) and (low > low_2)
     buy_cond_3 = (inc_ema9.iloc[-2] < 0) and (inc_ema9.iloc[-1] > 0)
