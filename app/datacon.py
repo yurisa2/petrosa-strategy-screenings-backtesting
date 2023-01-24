@@ -81,6 +81,10 @@ def find_params():
         logging.error(e)
         raise
 
+    params = client.petrosa_crypto['backtest_controller'].find(
+        {"strategy": "fox_trap_buy", "symbol": "DASHUSDT", "period": "m15"})
+    params = list(params)[0]
+
     return params
 
 

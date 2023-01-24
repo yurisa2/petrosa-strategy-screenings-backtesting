@@ -13,22 +13,10 @@ import json
 
 
 class bb_backtest(Strategy):
-    # buy_sl = None
-    # buy_tp = None
-    
     def init(self) -> None:
         pass
 
     def next(self):
-        
-#         if (
-#             self.buy_sl is None
-#  # type: ignore            or self.buy_tp is None
-#         ):
-#             return True
-
-#         if(self.buy_sl > self.buy_tp): # should be done via constraints
-#             return True
         
         if (self.data.index[-1] in self.main_data.index):
             work_data = self.main_data.loc[self.main_data.index
@@ -36,29 +24,35 @@ class bb_backtest(Strategy):
 
             if(len(self.orders) > 0):
                 for order in self.orders:
-                    order.cancel()
+                    if order.is_contingent == 0:
+                        order.cancel()
 
+            if not self.position and len(self.orders) > 0:
+                print("not")
 
-            try:
-                func = getattr(screenings, self.params['strategy'])
-                result = func(work_data, self.tf_timeframe)
-                if result != {}:
+            if(not self.position):
+            # if(1 == 1):
+                try:
+                    func = getattr(screenings, self.params['strategy'])
+                    result = func(work_data, self.tf_timeframe)
+                    if result != {} and result['stop_loss'] and result['take_profit']:
+                        if(self.params['type'] == "BUY"):
+                            self.buy(
+                                    stop=result['entry_value'],
+                                    # limit=result['entry_value'],
+                                    sl=result['stop_loss'],
+                                    tp=result['take_profit'],
+                                    )
+                        else:
+                            self.sell(sl=result['stop_loss'],
+                                    tp=result['take_profit'],
+                                    stop=result['entry_value'])
 
-                    if(self.params['type'] == "BUY"):
-                        self.buy(sl=result['stop_loss'],
-                                tp=result['take_profit'],
-                                limit=result['entry_value'])
-                    else:
-                        self.sell(sl=result['stop_loss'],
-                                 tp=result['take_profit'],
-                                 limit=result['entry_value'])
-
-            except UserWarning as usr_e:
-                logging.info(usr_e)
-            except Exception as e:
-                logging.error(e)
-                return False
-
+                except UserWarning as usr_e:
+                    logging.info(usr_e)
+                except Exception as e:
+                    logging.exception(e)
+                    return False
        
         else:
             return True
@@ -87,14 +81,6 @@ def run_backtest(params):
         exclusive_orders=True,
         cash=100000)
 
-    # stats = bt.optimize(
-    #     buy_sl=list(np.arange(1, 3, 0.5)),
-    #     buy_tp=list(np.arange(1, 4, 0.5)),
-    #     maximize='SQN',
-    #     # minimize='Max. Drawdown [%]',
-    #     max_tries=200,
-    #     random_state=0,
-    #     return_heatmap=False)
     stats = bt.run()
 
     new_hm = {}
